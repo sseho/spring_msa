@@ -1,8 +1,6 @@
 package com.beyond.order_system.product.service;
 
 import com.beyond.order_system.common.service.StockInventoryService;
-import com.beyond.order_system.member.domain.Member;
-import com.beyond.order_system.member.dto.MemberListRes;
 import com.beyond.order_system.product.domain.Product;
 import com.beyond.order_system.product.dto.ProductResDto;
 import com.beyond.order_system.product.dto.ProductSaveReqDto;

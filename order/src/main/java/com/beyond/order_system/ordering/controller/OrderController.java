@@ -61,10 +61,10 @@ public class OrderController {
         return new ResponseEntity<>(commonResDto, HttpStatus.OK);
     }
 
-    @PatchMapping("/order/{id}/cancel/myorder")
-    public ResponseEntity<?> cancelMyOrder(@PathVariable Long id) {
-        Ordering ordering = orderService.cancelMyOrder(id);
-        CommonResDto commonResDto = new CommonResDto(HttpStatus.OK,"myOrder is successfully canceled",ordering.getId());
-        return new ResponseEntity<>(commonResDto, HttpStatus.OK);
-    }
+//    @PatchMapping("/order/{id}/cancel/myorder")
+//    public ResponseEntity<?> cancelMyOrder(@PathVariable Long id) {
+//        Ordering ordering = orderService.cancelMyOrder(id);
+//        CommonResDto commonResDto = new CommonResDto(HttpStatus.OK,"myOrder is successfully canceled",ordering.getId());
+//        return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+//    }
 }
