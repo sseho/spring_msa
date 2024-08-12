@@ -47,7 +47,7 @@ public class JwtAuthfilter extends GenericFilter {
 //            authentication객체 만들기 위해 userDetails 필요
                 UserDetails userDetails = new User(claims.getSubject(),"",authorities); //getSubject 에 유저정보
 //            Authentication객체생성(UserDetails객체도 필요) : 스프링 전역 객체 에 인증 정보를 담는다
-                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails,"",userDetails.getAuthorities());
+                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails,bearerToken,userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 //        filterchain에서 그 다음 filtering로 넘어가도록하는 메서드

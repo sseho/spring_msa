@@ -5,6 +5,7 @@ import com.beyond.order_system.product.domain.Product;
 import com.beyond.order_system.product.dto.ProductResDto;
 import com.beyond.order_system.product.dto.ProductSaveReqDto;
 import com.beyond.order_system.product.dto.ProductSearchDto;
+import com.beyond.order_system.product.dto.ProductUpdateStockDto;
 import com.beyond.order_system.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -128,4 +130,14 @@ public class ProductService {
     }
 
 
+    public ProductResDto productDetail(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("product is not found"));
+        return product.fromEntity();
+    }
+
+    public Product productUpdateStock(ProductUpdateStockDto dto) {
+        Product product = productRepository.findById(dto.getProductId()).orElseThrow(()-> new EntityNotFoundException("product is not found"));
+        product.updateStockQuantity(dto.getProductQuantity());
+        return product;
+    }
 }

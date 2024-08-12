@@ -32,7 +32,7 @@ public class OrderController {
 
     @PostMapping("/order/create")
     public String createOrder(@RequestBody List<OrderSaveRequestDto> dto) {
-        Ordering ordering = orderService.orderCreate(dto);
+        Ordering ordering = orderService.orderFeignClientCreate(dto);
         return "ok";
     }
 
