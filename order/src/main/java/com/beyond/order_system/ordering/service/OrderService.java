@@ -11,6 +11,7 @@ import com.beyond.order_system.ordering.repository.OrderRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+//import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,20 +27,22 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final StockInventoryService stockInventoryService;
-    private final StockDecreaseEventHandler stockDecreaseEventHandler;
+//    private final StockDecreaseEventHandler stockDecreaseEventHandler;
     private final RestTemplate restTemplate;
     private final SseController sseController;
     private final ProductFeign productFeign;
+//    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository, StockInventoryService stockInventoryService, StockDecreaseEventHandler stockDecreaseEventHandler, RestTemplate restTemplate, SseController sseController, ProductFeign productFeign) {
+    public OrderService(OrderRepository orderRepository, StockInventoryService stockInventoryService, RestTemplate restTemplate, SseController sseController, ProductFeign productFeign) {
 
         this.orderRepository = orderRepository;
         this.stockInventoryService = stockInventoryService;
-        this.stockDecreaseEventHandler = stockDecreaseEventHandler;
+//        this.stockDecreaseEventHandler = stockDecreaseEventHandler;
         this.restTemplate = restTemplate;
         this.sseController = sseController;
         this.productFeign = productFeign;
+//        this.kafkaTemplate = kafkaTemplate;
     }
 
 //    syncronized를 설정한다 하더라도, 재고 감소가 db에 반영되는 시점은 트랜잭션이 커밋되고 종료되는 시점
@@ -69,7 +72,7 @@ public class OrderService {
                     throw new IllegalArgumentException("재고 부족");
                 }
 //                rdb에 재고를 업데이트 rabbitmq를 통해 비동기적으로 이벤트 처리
-                stockDecreaseEventHandler.publish(new StockDecreaseEvent(productDto.getId(),dto.getProductCount()));
+//                stockDecreaseEventHandler.publish(new StockDecreaseEvent(productDto.getId(),dto.getProductCount()));
             }else {
                 if(productDto.getStockQuantity()< dto.getProductCount()){
                     throw new IllegalArgumentException("재고 부족");
@@ -116,7 +119,7 @@ public class OrderService {
                     throw new IllegalArgumentException("재고 부족");
                 }
 //                rdb에 재고를 업데이트 rabbitmq를 통해 비동기적으로 이벤트 처리
-                stockDecreaseEventHandler.publish(new StockDecreaseEvent(productDto.getId(),dto.getProductCount()));
+//                stockDecreaseEventHandler.publish(new StockDecreaseEvent(productDto.getId(),dto.getProductCount()));
             }else {
                 if(productDto.getStockQuantity()< dto.getProductCount()){
                     throw new IllegalArgumentException("재고 부족");
@@ -137,7 +140,46 @@ public class OrderService {
     }
 
 //    public Ordering orderFeignKafkaCreate(List<OrderSaveRequestDto> dtos) {
+//        String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 //
+//        Ordering ordering = Ordering.builder()
+//                .memberEmail(memberEmail)
+//                .orderDetail(new ArrayList<>()).build();
+//        for(OrderSaveRequestDto dto: dtos){
+////            product API에 요청을 통해 product객체를 조회해야함
+//
+////            ResponseEntity가 기본응답 값이므로 바로 CommonResDto로 매핑
+//            CommonResDto commonResDto = productFeign.getProductById(dto.getProductId());
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            ProductDto productDto = objectMapper.convertValue(commonResDto.getResult(), ProductDto.class);
+//
+//            System.out.println(productDto);
+//            if(productDto.getName().contains("sale")){
+////            redis를 통한 재고관리 및 재고 잔량 확인
+//                int newQuantity = stockInventoryService.decreaseStock(dto.getProductId(),dto.getProductCount()).intValue();
+//                if(newQuantity < 0){
+//                    throw new IllegalArgumentException("재고 부족");
+//                }
+////                rdb에 재고를 업데이트 rabbitmq를 통해 비동기적으로 이벤트 처리
+//                stockDecreaseEventHandler.publish(new StockDecreaseEvent(productDto.getId(),dto.getProductCount()));
+//            }else {
+//                if(productDto.getStockQuantity()< dto.getProductCount()){
+//                    throw new IllegalArgumentException("재고 부족");
+//                }
+//                ProductUpdateStockDto productUpdateStockDto = new ProductUpdateStockDto(dto.getProductId(),dto.getProductCount());
+//                kafkaTemplate.send("product-update-topic", productUpdateStockDto);
+//            }
+//            OrderDetail orderDetail = OrderDetail.builder() // 주문상세 OrderDetail 객체 조립
+//                    .productId(productDto.getId())
+//                    .ordering(ordering)
+//                    .quantity(dto.getProductCount())
+//                    .build();
+//            ordering.getOrderDetail().add(orderDetail);
+////            ordering.getOrderDetail().add(dto.toEntity(ordering,productDto));
+//        }
+//        Ordering savedOrdering = orderRepository.save(ordering);
+//        sseController.publishMessage(savedOrdering.fromEntity(),"admin@test.com");
+//        return savedOrdering;
 //    }
 
     public List<OrderListResDto> orderList() {

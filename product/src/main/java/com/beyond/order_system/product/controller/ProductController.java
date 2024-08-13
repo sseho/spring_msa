@@ -8,6 +8,8 @@ import com.beyond.order_system.product.dto.ProductSearchDto;
 import com.beyond.order_system.product.dto.ProductUpdateStockDto;
 import com.beyond.order_system.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,14 +20,25 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+// 해당어노테이션 사용시 아래 스프링빈은 실시간  config변경사항의 대상이 됨
+@RefreshScope
 @RestController
 public class ProductController {
+
+    @Value("${message.hello}")
+    private String helloWorlds;
 
     private final ProductService productService;
     @Autowired
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
+
+    @GetMapping("product/config/test")
+    public String configTest(){
+        return helloWorlds;
+    }
+
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("product/create")

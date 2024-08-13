@@ -28,7 +28,7 @@ public class SecurityConfigs {
                 .cors().and() //CORS활성화 다른 도메인에서 서버로 호출하는 것을 금지
                 .httpBasic().disable() // 관례적으로 들어감
                 .authorizeRequests()
-                    .antMatchers("/","/member/create","/doLogin","/refresh-token","/product/list","/member/reset-password")
+                    .antMatchers("/","/member/create","/doLogin","/refresh-token","/product/list","/member/reset-password","/product/config/test")
                     .permitAll()
                 .anyRequest().authenticated()
                 .and()
